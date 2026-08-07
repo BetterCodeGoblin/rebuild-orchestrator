@@ -60,9 +60,9 @@ class RebuildOrchestratorToolset(unreal.ToolsetDefinition):
 
         Use this to compile C++ changes without asking the user to type the
         console command by hand. `rebuild.build` requests a graceful editor
-        shutdown, builds through UBT, and does NOT auto-relaunch; follow with
-        `rebuild.relaunch` (or use `rebuild.full` to build and relaunch in one
-        step). Check `rebuild.status` if a build fails with a file lock.
+        shutdown, builds through UBT, and relaunches the editor. Use
+        `rebuild.full` when a clean build is needed. Check `rebuild.status` if
+        a build fails with a file lock.
 
         Before triggering `rebuild.build`, `rebuild.clean`, or `rebuild.full`,
         confirm PIE is not running and no asset editors have unsaved work,
@@ -90,8 +90,8 @@ class RebuildOrchestratorToolset(unreal.ToolsetDefinition):
         return (
             f"Dispatched '{normalized}'. "
             "Logs land in <Project>/Saved/RebuildOrchestrator/Logs/. "
-            "Note: rebuild.build does not auto-relaunch -- follow with "
-            "rebuild.relaunch, or use rebuild.full."
+            "Note: rebuild.build and rebuild.full both relaunch after a "
+            "successful build."
         )
 
     @toolset_registry.tool_call

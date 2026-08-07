@@ -17,8 +17,8 @@ The first Windows dogfood pass is verified on UE 5.8 with StrengthERG: `rebuild.
 
 Open the Unreal console and run:
 
-- `rebuild.full` - launches the external full rebuild script, then requests graceful editor shutdown.
-- `rebuild.build` - launches the external build-only script path, then requests graceful editor shutdown.
+- `rebuild.full` - launches the external clean/build/relaunch script, then requests graceful editor shutdown.
+- `rebuild.build` - launches the external build/relaunch script, then requests graceful editor shutdown.
 - `rebuild.clean` - launches the external clean-only script path, then requests graceful editor shutdown.
 - `rebuild.relaunch` - launches a second UnrealEditor instance for the current project.
 - `rebuild.logs` - opens the plugin log folder and prints its path to the Unreal log.

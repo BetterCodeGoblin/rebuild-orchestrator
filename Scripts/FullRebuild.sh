@@ -155,6 +155,7 @@ case "$MODE" in
   build)
     wait_for_editor_exit 300
     build_project
+    relaunch_editor
     ;;
   relaunch)
     relaunch_editor

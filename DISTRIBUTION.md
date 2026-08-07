@@ -42,7 +42,7 @@ Install the packaged plugin into a separate UE 5.8 C++ project and verify:
 3. `rebuild.status` prints project, engine, and log paths.
 4. `rebuild.relaunch` opens a second editor instance.
 5. `rebuild.clean` deletes `Binaries/` and generated intermediate contents while preserving `Intermediate/ProjectFiles/`.
-6. `rebuild.build` exits the editor and builds successfully.
+6. `rebuild.build` exits the editor, builds successfully, and relaunches.
 7. `rebuild.full` exits, cleans, builds, and relaunches.
 
 ## Do Not Ship

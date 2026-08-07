@@ -1,15 +1,35 @@
-# Python cache
+Binaries/
+Intermediate/
+Saved/
+DerivedDataCache/
+
+Plugins/*/Binaries/
+Plugins/*/Intermediate/
+Plugins/*/Saved/
+
 __pycache__/
 *.pyc
 
-# Unreal generated (should never be committed for a plugin)
-Binaries/
-Intermediate/
-DerivedDataCache/
-Saved/
+.vs/
+.vscode/
+.idea/
+
+*.sln
+*.slnx
+*.suo
+*.user
+*.userprefs
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
 *.VC.db
 *.VC.opendb
 
-# OS junk
+*.pdb
+*.mdb
+*.dmp
+*.mem
+
 .DS_Store
 Thumbs.db
+desktop.ini

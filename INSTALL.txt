@@ -47,13 +47,13 @@ Important behavior
 - rebuild.relaunch opens a second editor instance for the current project.
 - rebuild.clean closes Unreal, deletes Binaries, and deletes generated Intermediate contents.
 - rebuild.clean preserves Intermediate\ProjectFiles so generated Visual Studio project files keep loading.
-- rebuild.build closes Unreal and runs the editor target build externally.
+- rebuild.build closes Unreal, runs the editor target build externally, and relaunches Unreal.
 - rebuild.full closes Unreal, cleans, builds, and relaunches Unreal.
 
 Safety notes
 ------------
 - Save all maps, Blueprints, and assets before running rebuild.clean, rebuild.build, or rebuild.full.
-- Expect Unreal to close during clean, build, and full rebuild.
+- Expect Unreal to close during clean, build, and full rebuild. Build and full relaunch after success.
 - The plugin does not run arbitrary shell commands.
 - The clean step does not delete Content, Config, Source, engine folders, or Perforce/Git metadata.
 

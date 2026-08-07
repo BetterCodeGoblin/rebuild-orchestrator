@@ -164,6 +164,7 @@ try {
         "build" {
             Wait-ForEditorExit -ProjectFullPath $ProjectPath -TimeoutSeconds 300
             Invoke-Build -ProjectFullPath $ProjectPath -EngineFullDir $EngineDir
+            Invoke-Relaunch -ProjectFullPath $ProjectPath -EngineFullDir $EngineDir
         }
         "relaunch" {
             Invoke-Relaunch -ProjectFullPath $ProjectPath -EngineFullDir $EngineDir

@@ -208,7 +208,7 @@ Verified on SANS / StrengthERG / UE 5.8 through changelist 132:
 
 - `rebuild.relaunch` opened a second editor.
 - `rebuild.clean` waited for Unreal to exit, deleted `Binaries/` and generated intermediate contents, and completed successfully.
-- `rebuild.build` waited for Unreal to exit, ran UBT/Build.bat, and completed successfully.
+- `rebuild.build` waited for Unreal to exit, ran UBT/Build.bat, completed successfully, and relaunched Unreal.
 - `rebuild.full` closed Unreal, cleaned, built, and relaunched Unreal.
 
 ## Remaining Risks
