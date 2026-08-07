@@ -15,13 +15,16 @@ Design constraints (kept deliberately narrow for classroom / multi-machine use):
   * Only the six known `rebuild.*` commands are accepted. No arbitrary console
     execution is exposed, matching the plugin's existing safety model.
   * Commands run on the game thread via the editor console executor.
-  * Registered at editor start-up: the sibling Content/Python/init_unreal.py
-    imports this module so the @unreal.uclass() decorator runs and the Toolset
-    Registry sees it. (Unreal only auto-runs init_unreal.py from a plugin's
-    Content/Python/; a bare module here would never be imported on its own.)
+  * Registered at editor start-up by the sibling Content/Python/init_unreal.py,
+    which both imports this module (Unreal only auto-runs init_unreal.py from a
+    plugin's Content/Python/, so a bare module here would never be imported on
+    its own) AND explicitly calls Registration([...]).register(). The
+    @unreal.uclass() decorator alone only creates the UClass; it does not add
+    the toolset to the Toolset Registry.
 
-Refresh after editing without restarting the editor:
-    ModelContextProtocol.RefreshTools
+Picking up edits to this file requires an editor restart.
+ModelContextProtocol.RefreshTools is NOT sufficient: it only re-publishes the
+toolsets already in the registry and never re-imports Python.
 """
 
 import unreal

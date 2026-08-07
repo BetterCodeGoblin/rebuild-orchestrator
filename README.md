@@ -60,22 +60,23 @@ automatically at editor start-up, so the simplest path is:
 3. Connect your MCP agent. It should now see `run_rebuild_command` and
    `list_rebuild_commands`.
 
-If you added/updated the toolset in an already-running editor and do not want
-to restart, run this once in the editor console:
+If the toolset was already registered and you only need MCP to republish the
+current registry, run this in the editor console:
 
 ```text
 ModelContextProtocol.RefreshTools
 ```
 
-This imports `init_unreal.py` and registers the toolset without a restart.
+`RefreshTools` does not import Python modules or register missing toolsets. If
+`run_rebuild_command` / `list_rebuild_commands` are absent after an install or
+update, restart the editor so Unreal runs `init_unreal.py`.
 
 > Bootstrap gotcha: `ModelContextProtocol.RefreshTools` is itself a console
 > command, and running console commands is the exact gap this toolset fills.
-> So an agent cannot self-load the toolset -- the FIRST activation must be a
-> human typing `RefreshTools` in the console, or an editor restart. After that,
-> the agent can call `run_rebuild_command` on its own. For classroom setups,
-> bake "restart the editor once after install" into the setup steps and this
-> never surfaces.
+> So an agent cannot use it to self-load a missing rebuild toolset. The FIRST
+> activation after install/update should be an editor restart. For classroom
+> setups, bake "restart the editor once after install" into the setup steps and
+> this never surfaces.
 
 > Note: `CanContainContent` is `true` so the plugin can ship `Content/Python/`.
 
