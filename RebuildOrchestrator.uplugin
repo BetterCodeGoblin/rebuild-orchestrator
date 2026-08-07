@@ -1,0 +1,25 @@
+{
+  "FileVersion": 3,
+  "Version": 4,
+  "VersionName": "0.1.3",
+  "FriendlyName": "Rebuild Orchestrator",
+  "Description": "Editor-only safe clean/build/relaunch workflow for Unreal C++ projects.",
+  "Category": "Editor",
+  "CreatedBy": "Kato",
+  "CreatedByURL": "",
+  "DocsURL": "",
+  "MarketplaceURL": "",
+  "SupportURL": "",
+  "EngineVersion": "5.8.0",
+  "CanContainContent": true,
+  "IsBetaVersion": false,
+  "IsExperimentalVersion": false,
+  "Installed": false,
+  "Modules": [
+    {
+      "Name": "RebuildOrchestrator",
+      "Type": "Editor",
+      "LoadingPhase": "Default"
+    }
+  ]
+}

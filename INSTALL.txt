@@ -1,0 +1,87 @@
+Rebuild Orchestrator 0.1.2 - User Install Instructions
+=======================================================
+
+Supported baseline
+------------------
+- Unreal Engine 5.8
+- Windows
+- C++ Unreal project
+- Visual Studio / MSVC toolchain installed for Unreal C++ builds
+- Windows PowerShell 5.1, included with Windows
+
+Install
+-------
+1. Unzip the Rebuild Orchestrator package.
+2. Copy the RebuildOrchestrator folder into your Unreal project:
+
+   <YourProject>\Plugins\RebuildOrchestrator\
+
+3. Regenerate project files:
+   - Right-click your .uproject file.
+   - Choose "Generate Visual Studio project files".
+
+4. Build your project editor target from Visual Studio or your normal Unreal build flow.
+5. Open the project in Unreal Editor.
+6. If prompted, enable the Rebuild Orchestrator plugin and restart Unreal.
+
+First checks
+------------
+Open the Unreal console and run:
+
+   rebuild.status
+
+Expected result:
+- The Unreal Output Log prints the project path.
+- The Unreal Output Log prints the engine path.
+- The Unreal Output Log prints the Rebuild Orchestrator log folder.
+
+Then test in this order:
+
+   rebuild.relaunch
+   rebuild.clean
+   rebuild.build
+   rebuild.full
+
+Important behavior
+------------------
+- rebuild.relaunch opens a second editor instance for the current project.
+- rebuild.clean closes Unreal, deletes Binaries, and deletes generated Intermediate contents.
+- rebuild.clean preserves Intermediate\ProjectFiles so generated Visual Studio project files keep loading.
+- rebuild.build closes Unreal and runs the editor target build externally.
+- rebuild.full closes Unreal, cleans, builds, and relaunches Unreal.
+
+Safety notes
+------------
+- Save all maps, Blueprints, and assets before running rebuild.clean, rebuild.build, or rebuild.full.
+- Expect Unreal to close during clean, build, and full rebuild.
+- The plugin does not run arbitrary shell commands.
+- The clean step does not delete Content, Config, Source, engine folders, or Perforce/Git metadata.
+
+Logs
+----
+Logs are written under:
+
+   <YourProject>\Saved\RebuildOrchestrator\Logs\
+
+Useful files:
+- RebuildOrchestrator-<mode>-<timestamp>.log
+- RebuildOrchestrator-bootstrap-<mode>-<timestamp>.log
+- RebuildOrchestrator-launch-<mode>-<timestamp>.cmd
+
+These are diagnostic files generated inside your project Saved folder. They are not part of the plugin package.
+
+Troubleshooting
+---------------
+If a command fails:
+1. Run rebuild.status.
+2. Run rebuild.logs.
+3. Open the latest RebuildOrchestrator-<mode>-<timestamp>.log.
+4. Check the latest bootstrap log if the main log is missing or incomplete.
+
+If Visual Studio reports a missing .vcxproj file:
+1. Regenerate project files from the .uproject file.
+2. Rebuild the editor target.
+
+Distribution status
+-------------------
+This is a Windows UE 5.8 beta build dogfooded on StrengthERG. Validate in your own project before relying on it for production work.
