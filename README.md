@@ -38,8 +38,9 @@ start-up by `Content/Python/init_unreal.py` (requires the `Unreal MCP` +
 `init_unreal.py` is NOT optional. Unreal runs only that filename from a
 plugin's `Content/Python/`; other modules in the folder are placed on
 `sys.path` but never imported, so without the hook the `@unreal.uclass()`
-decorator never runs and the toolset never registers (no error is logged --
-it just silently never appears).
+decorator never runs and the module's `register()` function never hands the
+toolset class to `unreal.ToolsetRegistry` (no error is logged -- it just
+silently never appears).
 
 Exposed MCP tools:
 

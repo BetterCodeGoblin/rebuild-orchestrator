@@ -8,35 +8,20 @@ defined.
 
 Importing is necessary but NOT sufficient. The `@unreal.uclass()` decorator
 only creates the UClass -- it does not add the toolset to the Toolset Registry.
-Registration is an explicit call, exactly as the stock engine toolsets do it in
-Engine/Plugins/Experimental/Toolsets/EditorToolset/Content/Python/init_unreal.py:
+Registration is an explicit call. The toolset module owns that call through
+its register() function, following Epic's UE 5.8 ToolsetRegistry pattern.
 
-    toolsets._registration.register()
-
-Without the `Registration(...).register()` call below, the module imports
-cleanly, no error is logged, and the toolset is still invisible over MCP --
-`list_toolsets` shows every stock toolset and none of ours. Note that
-`ModelContextProtocol.RefreshTools` does not help in that state: it only
-re-publishes the toolsets already in the registry, so an unregistered toolset
-stays unregistered no matter how many times you refresh.
+`ModelContextProtocol.RefreshTools` does not help when the toolset was never
+registered: it only re-publishes the current registry, so an unregistered
+toolset stays unregistered no matter how many times you refresh.
 """
 
 import unreal
 
-from toolset_registry.registration import Registration
-
-# Module-level handle so the registration survives past start-up and can be
-# unregistered on reload.
-_registration = None
-
 try:
     import rebuild_orchestrator_toolset
 
-    _registration = Registration([
-        rebuild_orchestrator_toolset.RebuildOrchestratorToolset,
-    ])
-
-    if _registration.register():
+    if rebuild_orchestrator_toolset.register():
         unreal.log(
             "[RebuildOrchestrator] MCP toolset registered; "
             "run_rebuild_command / list_rebuild_commands available."

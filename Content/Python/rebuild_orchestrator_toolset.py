@@ -16,11 +16,10 @@ Design constraints (kept deliberately narrow for classroom / multi-machine use):
     execution is exposed, matching the plugin's existing safety model.
   * Commands run on the game thread via the editor console executor.
   * Registered at editor start-up by the sibling Content/Python/init_unreal.py,
-    which both imports this module (Unreal only auto-runs init_unreal.py from a
-    plugin's Content/Python/, so a bare module here would never be imported on
-    its own) AND explicitly calls Registration([...]).register(). The
-    @unreal.uclass() decorator alone only creates the UClass; it does not add
-    the toolset to the Toolset Registry.
+    which imports this module and calls register(). Unreal only auto-runs
+    init_unreal.py from a plugin's Content/Python/, so a bare module here would
+    never be imported on its own. The @unreal.uclass() decorator alone only
+    creates the UClass; it does not add the toolset to the Toolset Registry.
 
 Picking up edits to this file requires an editor restart.
 ModelContextProtocol.RefreshTools is NOT sufficient: it only re-publishes the
@@ -54,8 +53,8 @@ class RebuildOrchestratorToolset(unreal.ToolsetDefinition):
     exposed.
     """
 
-    @staticmethod
     @toolset_registry.tool_call
+    @staticmethod
     def run_rebuild_command(command: str) -> str:
         """Run one whitelisted Rebuild Orchestrator console command.
 
@@ -95,8 +94,8 @@ class RebuildOrchestratorToolset(unreal.ToolsetDefinition):
             "rebuild.relaunch, or use rebuild.full."
         )
 
-    @staticmethod
     @toolset_registry.tool_call
+    @staticmethod
     def list_rebuild_commands() -> list[str]:
         """List the Rebuild Orchestrator console commands this tool can run.
 
@@ -104,3 +103,25 @@ class RebuildOrchestratorToolset(unreal.ToolsetDefinition):
             The whitelisted `rebuild.*` command names.
         """
         return sorted(_ALLOWED_COMMANDS)
+
+
+def register() -> bool:
+    """Register this toolset with Unreal's ToolsetRegistry."""
+    registry = unreal.ToolsetRegistry
+    if not registry.is_available():
+        unreal.log_warning("[RebuildOrchestrator] ToolsetRegistry is not available.")
+        return False
+
+    if registry.is_toolset_class_registered(RebuildOrchestratorToolset):
+        registry.unregister_toolset_class(RebuildOrchestratorToolset)
+
+    registry.register_toolset_class(RebuildOrchestratorToolset)
+    unreal.log("[RebuildOrchestrator] RebuildOrchestratorToolset registered.")
+    return True
+
+
+def unregister() -> None:
+    """Unregister this toolset if it is currently registered."""
+    registry = unreal.ToolsetRegistry
+    if registry.is_available() and registry.is_toolset_class_registered(RebuildOrchestratorToolset):
+        registry.unregister_toolset_class(RebuildOrchestratorToolset)
