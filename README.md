@@ -31,9 +31,15 @@ console-command execution, so an MCP-connected AI agent (Claude Code, Cursor,
 etc.) can plan a rebuild but cannot fire it. This plugin ships a narrow Python
 toolset that closes that gap for exactly the `rebuild.*` commands.
 
-File: `Content/Python/rebuild_orchestrator_toolset.py` (auto-discovered by the
-Toolset Registry at editor startup; requires the `Unreal MCP` + `All Toolsets`
-plugins to be enabled).
+Files: `Content/Python/rebuild_orchestrator_toolset.py`, imported at editor
+start-up by `Content/Python/init_unreal.py` (requires the `Unreal MCP` +
+`All Toolsets` plugins to be enabled).
+
+`init_unreal.py` is NOT optional. Unreal runs only that filename from a
+plugin's `Content/Python/`; other modules in the folder are placed on
+`sys.path` but never imported, so without the hook the `@unreal.uclass()`
+decorator never runs and the toolset never registers (no error is logged --
+it just silently never appears).
 
 Exposed MCP tools:
 
@@ -41,8 +47,35 @@ Exposed MCP tools:
 - `list_rebuild_commands()` - lists the allowed commands.
 
 Only the six known `rebuild.*` commands are accepted; no arbitrary console
-execution is exposed, matching the plugin's safety model. After editing the
-toolset, run `ModelContextProtocol.RefreshTools` (no editor restart needed).
+execution is exposed, matching the plugin's safety model.
+
+### Activation (required once after install/update)
+
+The toolset registers when Unreal imports `init_unreal.py`. That happens
+automatically at editor start-up, so the simplest path is:
+
+1. Enable the `Unreal MCP` and `All Toolsets` plugins.
+2. **Restart the editor** (or launch it fresh). On start-up it runs
+   `init_unreal.py`, which registers the toolset.
+3. Connect your MCP agent. It should now see `run_rebuild_command` and
+   `list_rebuild_commands`.
+
+If you added/updated the toolset in an already-running editor and do not want
+to restart, run this once in the editor console:
+
+```text
+ModelContextProtocol.RefreshTools
+```
+
+This imports `init_unreal.py` and registers the toolset without a restart.
+
+> Bootstrap gotcha: `ModelContextProtocol.RefreshTools` is itself a console
+> command, and running console commands is the exact gap this toolset fills.
+> So an agent cannot self-load the toolset -- the FIRST activation must be a
+> human typing `RefreshTools` in the console, or an editor restart. After that,
+> the agent can call `run_rebuild_command` on its own. For classroom setups,
+> bake "restart the editor once after install" into the setup steps and this
+> never surfaces.
 
 > Note: `CanContainContent` is `true` so the plugin can ship `Content/Python/`.
 
