@@ -35,22 +35,26 @@ function Wait-ForEditorExit {
 
     Write-Status "Waiting for UnrealEditor to exit for project: $ProjectFullPath"
     Write-Status "The in-editor plugin should already have requested a graceful shutdown."
+    Write-Status "Timeout: $TimeoutSeconds s (graceful shutdown of a loaded editor can take a while)."
 
-    $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
+    $start = Get-Date
+    $deadline = $start.AddSeconds($TimeoutSeconds)
     while ((Get-Date) -lt $deadline) {
         $matches = @(Get-CimInstance Win32_Process -Filter "Name = 'UnrealEditor.exe'" -ErrorAction SilentlyContinue |
             Where-Object { $_.CommandLine -and $_.CommandLine.IndexOf($ProjectFullPath, [System.StringComparison]::OrdinalIgnoreCase) -ge 0 })
 
         if ($matches.Count -eq 0) {
-            Write-Status "No matching UnrealEditor process found."
+            $elapsed = [int]((Get-Date) - $start).TotalSeconds
+            Write-Status "UnrealEditor has exited after $elapsed s. Continuing."
             return
         }
 
-        Write-Status "Still waiting on UnrealEditor process id(s): $($matches.ProcessId -join ', ')"
+        $remaining = [int]($deadline - (Get-Date)).TotalSeconds
+        Write-Status "Still waiting on UnrealEditor process id(s): $($matches.ProcessId -join ', ') ($remaining s left)"
         Start-Sleep -Seconds 2
     }
 
-    throw "Timed out waiting for UnrealEditor to exit; refusing to continue while the editor may still be running."
+    throw "Timed out after $TimeoutSeconds s waiting for UnrealEditor to exit; refusing to continue while the editor may still be running. If the editor is mid-shutdown, wait for it to close and run the command again, or increase the timeout."
 }
 
 function Invoke-Clean {
@@ -154,18 +158,18 @@ try {
 
     switch ($Mode) {
         "clean" {
-            Wait-ForEditorExit -ProjectFullPath $ProjectPath -TimeoutSeconds 30
+            Wait-ForEditorExit -ProjectFullPath $ProjectPath -TimeoutSeconds 300
             Invoke-Clean -ProjectDirectory $ProjectDir
         }
         "build" {
-            Wait-ForEditorExit -ProjectFullPath $ProjectPath -TimeoutSeconds 30
+            Wait-ForEditorExit -ProjectFullPath $ProjectPath -TimeoutSeconds 300
             Invoke-Build -ProjectFullPath $ProjectPath -EngineFullDir $EngineDir
         }
         "relaunch" {
             Invoke-Relaunch -ProjectFullPath $ProjectPath -EngineFullDir $EngineDir
         }
         "full" {
-            Wait-ForEditorExit -ProjectFullPath $ProjectPath -TimeoutSeconds 120
+            Wait-ForEditorExit -ProjectFullPath $ProjectPath -TimeoutSeconds 300
             Invoke-Clean -ProjectDirectory $ProjectDir
             Invoke-Build -ProjectFullPath $ProjectPath -EngineFullDir $EngineDir
             Invoke-Relaunch -ProjectFullPath $ProjectPath -EngineFullDir $EngineDir

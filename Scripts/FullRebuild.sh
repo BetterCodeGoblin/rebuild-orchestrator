@@ -149,18 +149,18 @@ fi
 
 case "$MODE" in
   clean)
-    wait_for_editor_exit 30
+    wait_for_editor_exit 300
     clean_project
     ;;
   build)
-    wait_for_editor_exit 30
+    wait_for_editor_exit 300
     build_project
     ;;
   relaunch)
     relaunch_editor
     ;;
   full)
-    wait_for_editor_exit 120
+    wait_for_editor_exit 300
     clean_project
     build_project
     relaunch_editor

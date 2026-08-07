@@ -91,6 +91,17 @@ Example UE 5.8 packaging command:
 
 After packaging, install into a clean UE 5.8 C++ project and verify `rebuild.status`, `rebuild.relaunch`, `rebuild.clean`, `rebuild.build`, and `rebuild.full`.
 
+## Shutdown Timeout
+
+`build`, `clean`, and `full` first wait for the editor to close (the in-editor
+plugin requests a graceful shutdown via `RequestEngineExit`). The wait timeout
+is **300 seconds** for all three modes. Graceful shutdown of a large, loaded
+UE 5.8 project can take well over 30 seconds, so a short timeout (the old 30 s
+default) would fail agent-driven and classroom rebuilds even though the editor
+was closing normally. If a build still times out, the editor is genuinely stuck
+-- wait for it to close and re-run, or check `rebuild.status` for a stray
+`UnrealEditor.exe`.
+
 ## Caveats
 
 - Windows UE 5.8 dogfood passed in StrengthERG.
